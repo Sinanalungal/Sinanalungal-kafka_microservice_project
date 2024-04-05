@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: contactus
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "9207400638" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .  
+    volumes:
+      - .:/app
+    container_name: contactus_container
+    ports:
+      - 8004:8004
+    command: >
+      bash -c "python manage.py makemigrations &&
+               python manage.py migrate &&
+               python manage.py collectstatic --noinput &&
+               gunicorn --bind 0.0.0.0:8004 contactus.wsgi:application"
+    environment:
+      DB_HOST: postgres-db
+      DB_NAME: contactus
+      DB_USER: postgres
+      DB_PASSWORD: "9207400638"  
+    depends_on:
+      - postgres-db
+
+volumes:
+  postgres_data:
