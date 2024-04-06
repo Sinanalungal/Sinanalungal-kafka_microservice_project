@@ -87,7 +87,7 @@ DATABASES = {
         'NAME':os.environ.get("DB_NAME",'contactus'),
         'USER':os.environ.get("DB_USER",'postgres'),
         'PASSWORD':os.environ.get("DB_PASSWORD",'9207400638'),
-        'HOST':'postgres-db',
+        'HOST':'postgres-db-contactus',
         'PORT':'5432',
     }
 }

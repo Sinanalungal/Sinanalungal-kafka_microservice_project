@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+  postgres-db-products:
+    image: postgres:latest
+    container_name: postgres_products_container
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "9207400638" 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .  
+    volumes:
+      - .:/app
+    container_name: products_container
+    ports:
+      - 8002:8002
+    command: >
+      bash -c "python manage.py makemigrations &&
+               python manage.py migrate &&
+               python manage.py collectstatic --noinput &&
+               gunicorn --bind 0.0.0.0:8002 products.wsgi:application"
+    environment:
+      DB_HOST: postgres-db-products
+      DB_NAME: products
+      DB_USER: postgres
+      DB_PASSWORD: "9207400638"  
+    depends_on:
+      - postgres-db-products
+
+volumes:
+  postgres_data:
